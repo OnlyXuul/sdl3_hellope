@@ -74,7 +74,7 @@ main :: proc() {
 
 	if !meta_ok || !sdl_ok {
 		fmt.eprintln("SDL failed to initialize")
-		fmt.eprintfln("%s", sdl.GetError())
+		fmt.eprintln(sdl.GetError())
 		return
 	}
 
@@ -92,6 +92,7 @@ main :: proc() {
 
 	if driver == nil {
 		fmt.eprintfln("%s %v", "Unable to load driver from priority list for", ODIN_OS)
+		fmt.eprintln(sdl.GetError())
 		return
 	}
 
@@ -101,6 +102,12 @@ main :: proc() {
 	window   := sdl.CreateWindow("Example Renderer", 640, 480, {.RESIZABLE, .HIGH_PIXEL_DENSITY})
 	renderer := sdl.CreateRenderer(window, driver)
 	presentation_ok := sdl.SetRenderLogicalPresentation(renderer, 640, 480, .LETTERBOX)
+
+	if !presentation_ok {
+		fmt.eprintln("SDL failed to SetRenderLogicalPresentation")
+		fmt.eprintln(sdl.GetError())
+		return
+	}
 
 	// Get back loaded renderer driver for debugging info
 	driver = sdl.GetRendererName(renderer)
